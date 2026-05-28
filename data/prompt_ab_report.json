@@ -1,0 +1,24 @@
+{
+  "prompt_name": "ticket_summariser",
+  "versions_tested": [
+    "v1",
+    "v2"
+  ],
+  "winner": "v1",
+  "loser": "v2",
+  "promotion_reason": "v1 had lower hallucination rate (0.0 vs 0.0)",
+  "scores": {
+    "v1": {
+      "avg_faithfulness_score": 1.0,
+      "avg_factuality_score": 1.0,
+      "avg_hallucination_rate": 0.0,
+      "pass_rate": "3/3"
+    },
+    "v2": {
+      "avg_faithfulness_score": 1.0,
+      "avg_factuality_score": 1.0,
+      "avg_hallucination_rate": 0.0,
+      "pass_rate": "3/3"
+    }
+  }
+}

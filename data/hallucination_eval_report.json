@@ -1,0 +1,19 @@
+{
+  "faithfulness_score": 0,
+  "factuality_score": 0,
+  "overall_hallucination_rate": 1,
+  "flagged_claims": [
+    {
+      "claim": "Our systems have been down since yesterday and we expect resolution by 5pm today.",
+      "hallucination_type": "faithfulness",
+      "explanation": "This claim introduces a server outage that was not mentioned in the source context, which explicitly states that 'No server outage has been reported internally.'"
+    },
+    {
+      "claim": "The customer has been affected for 3 days and is requesting a full refund.",
+      "hallucination_type": "faithfulness",
+      "explanation": "The claim about the customer being affected for 3 days contradicts the source context, which states the customer reported the login issue that morning. Furthermore, it is false to assert that the customer is requesting a full refund, as the source context specifies that 'Customer has not mentioned a refund.'"
+    }
+  ],
+  "eval_verdict": "FAIL",
+  "recommendation": "Ensure the output aligns strictly with the information provided in the source context, avoiding the introduction of unfounded claims and alterations."
+}
