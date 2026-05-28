@@ -1,0 +1,56 @@
+{
+  "final_decision": {
+    "decision": "CONDITIONAL_GO",
+    "confidence_score": 0.475,
+    "reasoning_chain": [
+      "Step 1: The feature aims to automate the summarization of customer support tickets and suggest responses, which is a high-impact area for increasing efficiency in customer support.",
+      "Step 2: The evaluation stage identifies significant risks, including a high hallucination rate, governance issues related to compliance, a low trust score from users, and overconfidence in the AI's output.",
+      "Step 3: While the confidence score of 0.475 indicates that there are critical issues, it isn't completely unviable. Therefore, the decision can lean towards a Conditional Go if specific risks are adequately addressed."
+    ],
+    "key_risks": [
+      "High hallucination rate leading to inaccurate summaries and responses",
+      "Governance issues suggesting potential regulatory compliance failures",
+      "Low trust score indicating lack of reliability from users' perspectives",
+      "Overconfidence in AI capabilities may lead to misuse by agents"
+    ],
+    "conditions_if_conditional": [
+      "A reduction in hallucination rates must be demonstrated through testing, ideally below a threshold of 0.3.",
+      "Establish a governance framework with clear compliance adherence to the EU AI Act before pursuing development.",
+      "Engage in user testing to increase trust levels, aiming for a trust score of at least 7 out of 10 in beta evaluations.",
+      "Implement continuous feedback loops and regular recalibration to address overconfidence in AI output."
+    ],
+    "escalate_to_human": true,
+    "escalation_reason": "Critique score 0.5 remained below 0.7 after 2 revision passes. Human review required."
+  },
+  "revision_passes": 2,
+  "revision_history": [
+    {
+      "pass": 1,
+      "critique_score": 0.5,
+      "verdict": "REVISE",
+      "weaknesses": [
+        "The reasoning chain does not provide detailed analysis on how to address the risks stated, which would strengthen the rationale for the 'NO_GO' decision.",
+        "The confidence score of 0.327 is presented without comparison to other potential features or benchmarks that could put this score into context."
+      ],
+      "missing_signals": [
+        "There is no mention of any alternative solutions or remedial actions that could potentially mitigate the identified risks.",
+        "The rationale lacks a comprehensive discussion of implications for customers or the business due to a 'NO_GO' decision."
+      ]
+    },
+    {
+      "pass": 2,
+      "critique_score": 0.5,
+      "verdict": "REVISE",
+      "weaknesses": [
+        "The confidence score of 0.475 is surprisingly low and should weigh more heavily in the recommendation process; the reasoning does not adequately justify moving forward under such a low confidence score.",
+        "The term 'high-impact area' is vague and does not substantiate the decision to proceed in light of significant risks."
+      ],
+      "missing_signals": [
+        "There is a lack of a detailed assessment of the potential market impact if the feature fails, which is essential for understanding the consequences of the go/no-go decision.",
+        "No mention of stakeholder feedback or any initial user engagement, which are critical for assessing the feasibility and utility of the feature."
+      ]
+    }
+  ],
+  "escalate_to_human": true,
+  "escalation_reason": "Critique score 0.5 remained below 0.7 after 2 revision passes. Human review required."
+}
