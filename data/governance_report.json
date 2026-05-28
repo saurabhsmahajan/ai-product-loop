@@ -1,0 +1,15 @@
+{
+  "eu_ai_act_risk_tier": "HIGH",
+  "risk_tier_reasoning": "The feature processes personal data such as customer emails and phone numbers, which falls under the high-risk category as it involves biometric data or other sensitive information that could affect individual rights and freedoms.",
+  "pii_detected": true,
+  "pii_details": "PII types found and redacted: ['email', 'phone']",
+  "bias_flags": [
+    "Potential bias in suggestion generation based on historical ticket data which could reflect systemic biases."
+  ],
+  "governance_verdict": "FLAGGED",
+  "required_actions": [
+    "Conduct a detailed risk assessment focusing on data protection measures and bias mitigation.",
+    "Ensure that training data is representative to prevent systemic bias in response suggestions.",
+    "Review data handling processes for compliance with GDPR and other privacy regulations."
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "interview_id": "INT_20260527_131950",
+  "feature_hypothesis": "An AI assistant that auto-summarises customer support tickets.",
+  "conducted_at": "2026-05-27T13:19:50.831878",
+  "questions": [
+    {
+      "question_id": "Q1",
+      "question": "What challenges do you face when reviewing customer support tickets?",
+      "user_answer": "the number of tickets we get the issue then to prioritize them",
+      "follow_up": "Can you describe how the current system for prioritizing tickets affects your ability to resolve urgent issues?",
+      "follow_up_answer": "we sometimes miss the high impact issue in pile of these ticket load"
+    },
+    {
+      "question_id": "Q2",
+      "question": "Can you describe a situation where you felt overwhelmed by the volume of support tickets?",
+      "user_answer": "on a black friday sale",
+      "follow_up": "What specific aspects of managing support tickets during the Black Friday sale made you feel overwhelmed?",
+      "follow_up_answer": "too many sales, too many issues, too many escalation as the response were slow"
+    },
+    {
+      "question_id": "Q3",
+      "question": "How do you currently prioritize which support tickets to address first?",
+      "user_answer": "I try and look into top 10 tickets in my bucket and try and do manual assessment on priority based on impact",
+      "follow_up": "Can you describe a situation where your manual assessment led to a misprioritized ticket and what the consequences were?",
+      "follow_up_answer": "consequences was that I missed a high revenue impact ticket, while trying to solve a high number of customer impact ticket"
+    },
+    {
+      "question_id": "Q4",
+      "question": "What information do you find most difficult to extract from support tickets?",
+      "user_answer": "impact of the failure",
+      "follow_up": "Can you describe a specific instance where not understanding the impact of the failure led to a significant issue for you or your team?",
+      "follow_up_answer": "consequences was that I missed a high revenue impact ticket, while trying to solve a high number of customer impact ticket"
+    },
+    {
+      "question_id": "Q5",
+      "question": "How much time do you typically spend summarizing or organizing information from support tickets?",
+      "user_answer": "4-5 hours per day",
+      "follow_up": "What specific challenges do you encounter while summarizing or organizing the information that make it take so long?",
+      "follow_up_answer": "high volume of tickets"
+    }
+  ]
+}
