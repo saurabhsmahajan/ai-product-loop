@@ -1,0 +1,18 @@
+{
+  "pipeline_run_id": "RUN_20260528_154313",
+  "stage_summaries": {
+    "discover": "Develop an AI-powered solution to automate ticket prioritization and summarization to manage overwhelming ticket volumes more effectively.",
+    "evaluate": "Hallucination verdict: FAIL, Hallucination rate: 1, Governance verdict: FLAGGED, EU AI Act tier: HIGH, Trust score: 3, Calibration verdict: OVERCONFIDENT, Persona average score: 6.83, Persona blockers: IT / Security Lead, Legal / Compliance.",
+    "confidence": "Aggregated confidence score: 0.327"
+  },
+  "aggregated_confidence_score": 0.327,
+  "signals": [
+    "Hallucination rate is high",
+    "Governance concerns flagged",
+    "Trust score is low",
+    "Calibration is overconfident",
+    "Legal compliance issues exist"
+  ],
+  "route_to": "HUMAN_ESCALATION",
+  "routing_reason": "Aggregated confidence 0.327 is below 0.6 threshold \u2014 escalating to human."
+}

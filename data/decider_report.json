@@ -1,0 +1,18 @@
+{
+  "decision": "NO_GO",
+  "confidence_score": 0.327,
+  "reasoning_chain": [
+    "Step 1: The feature aims to automate summarization of customer support tickets and suggest responses, which is a high-impact area.",
+    "Step 2: The evaluation stage highlighted significant concerns, including a high hallucination rate, governance issues, low trust score, overconfidence in calibration, and potential legal compliance problems.",
+    "Step 3: The aggregated confidence score is 0.327, which is well below the acceptable threshold for proceeding with development."
+  ],
+  "key_risks": [
+    "High hallucination rate leading to inaccurate summaries and responses",
+    "Governance issues suggesting potential regulatory compliance failures",
+    "Low trust score indicating lack of reliability from users' perspective",
+    "Overconfidence in the AI's capabilities, which may lead to misuse"
+  ],
+  "conditions_if_conditional": [],
+  "escalate_to_human": true,
+  "escalation_reason": "The aggregated confidence score is insufficient for a go decision, warranting further human assessment."
+}
