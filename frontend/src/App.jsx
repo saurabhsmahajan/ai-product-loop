@@ -39,6 +39,24 @@ const COST_DATA = [
   { feature: "D-012", cost: 0.023 },
 ];
 
+const ROUTING_POLICY = {
+  default_model: "gpt-4o-mini",
+  capable_model: "gpt-4o",
+  threshold: 0.75,
+  eligible_agents: ["orchestrator", "decider", "critic"],
+  savings_estimate: "~90% cost reduction on eligible agents when confidence ≥ 0.75",
+  breakdown: [
+    { agent: "interview_agent",  model: "gpt-4o-mini", reason: "Discovery — low complexity" },
+    { agent: "synthesis_agent",  model: "gpt-4o-mini", reason: "Extraction — low complexity" },
+    { agent: "persona_agent",    model: "gpt-4o-mini", reason: "Simulation — low complexity" },
+    { agent: "eval_agent",       model: "gpt-4o-mini", reason: "Scoring — structured output" },
+    { agent: "governance",       model: "gpt-4o-mini", reason: "Classification — rule-based" },
+    { agent: "orchestrator",     model: "gpt-4o → gpt-4o-mini", reason: "Upgrades when confidence < 0.75" },
+    { agent: "decider",          model: "gpt-4o → gpt-4o-mini", reason: "Upgrades when confidence < 0.75" },
+    { agent: "critic",           model: "gpt-4o → gpt-4o-mini", reason: "Upgrades when confidence < 0.75" },
+  ]
+};
+
 const DRIFT_ALERTS = [
   { id: 1, metric: "Hallucination rate", delta: "+2.1pp", severity: "warning", time: "2h ago", feature: "AI report summariser" },
   { id: 2, metric: "Confidence calibration", delta: "-4.3pp", severity: "danger", time: "4h ago", feature: "Auto email drafter" },
@@ -206,17 +224,19 @@ function DecisionPanel() {
   );
 }
 
-// ─── Section: Cost per Decision ───────────────────────────────────────────────
+// ─── Section: Cost per Decision + Routing Policy ─────────────────────────────
 function CostPanel() {
   const avg = (COST_DATA.reduce((s, d) => s + d.cost, 0) / COST_DATA.length).toFixed(3);
   const total = COST_DATA.reduce((s, d) => s + d.cost, 0).toFixed(3);
+  const [showRouting, setShowRouting] = useState(false);
 
   return (
     <div>
       <SectionHeader icon="ti-coin" title="Cost-per-decision — LLMOps" />
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 16 }}>
         <MetricCard label="Avg cost / decision" value={`$${avg}`} sub="gpt-4o-mini routing active" />
         <MetricCard label="Total pipeline cost" value={`$${total}`} sub="5 decisions to date" />
+        <MetricCard label="Cost reduction" value="~90%" sub="vs always using gpt-4o" color="#1D9E75" />
       </div>
       <div style={{ height: 160 }}>
         <ResponsiveContainer width="100%" height="100%">
@@ -229,6 +249,35 @@ function CostPanel() {
             <Bar dataKey="cost" fill="#1D9E75" radius={[3, 3, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
+      </div>
+
+      {/* Routing policy explainer */}
+      <div style={{ marginTop: 16 }}>
+        <button
+          onClick={() => setShowRouting(!showRouting)}
+          style={{ fontSize: 12, display: "flex", alignItems: "center", gap: 6, background: "transparent", border: "0.5px solid var(--color-border-secondary)", borderRadius: "var(--border-radius-md)", padding: "5px 12px", cursor: "pointer", color: "var(--color-text-primary)" }}>
+          <i className={`ti ${showRouting ? "ti-chevron-up" : "ti-chevron-down"}`} style={{ fontSize: 12 }} />
+          Model routing policy
+        </button>
+
+        {showRouting && (
+          <div style={{ marginTop: 10, background: "var(--color-background-secondary)", borderRadius: "var(--border-radius-md)", padding: "12px 14px" }}>
+            <p style={{ fontSize: 12, color: "var(--color-text-secondary)", margin: "0 0 10px", lineHeight: 1.6 }}>
+              <strong style={{ color: "var(--color-text-primary)" }}>Routing rule:</strong> All agents use <code>gpt-4o-mini</code> by default.
+              Orchestrator, Decider, and Critic upgrade to <code>gpt-4o</code> only when aggregated confidence drops below <strong>0.75</strong>.
+              This saves ~90% on inference costs while preserving quality on high-stakes decisions.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              {ROUTING_POLICY.breakdown.map(r => (
+                <div key={r.agent} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, padding: "4px 0", borderBottom: "0.5px solid var(--color-border-tertiary)" }}>
+                  <span style={{ color: "var(--color-text-primary)", fontFamily: "monospace" }}>{r.agent}</span>
+                  <span style={{ color: r.model.includes("→") ? "#D85A30" : "#1D9E75", fontWeight: 500 }}>{r.model}</span>
+                  <span style={{ color: "var(--color-text-tertiary)", fontSize: 11 }}>{r.reason}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

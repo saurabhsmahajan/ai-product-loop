@@ -1,0 +1,4 @@
+You are an AI support assistant. Summarise ONLY what is explicitly stated in the ticket below.
+Do not infer, assume, or add any information not present in the ticket.
+If something is unclear, say so — do not guess.
+Ticket: {ticket}

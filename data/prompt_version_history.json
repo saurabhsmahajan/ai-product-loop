@@ -1,0 +1,23 @@
+[
+  {
+    "timestamp": "2026-06-01T13:22:39.741473",
+    "prompt_name": "ticket_summariser",
+    "event": "PROMOTED",
+    "version": "v2",
+    "reason": "Initial promotion \u2014 v2 was Day 5 winner"
+  },
+  {
+    "timestamp": "2026-06-01T13:24:36.824841",
+    "prompt_name": "ticket_summariser",
+    "event": "PROMOTED",
+    "version": "v3",
+    "reason": "Test promotion to enable rollback test"
+  },
+  {
+    "timestamp": "2026-06-01T13:24:52.881424",
+    "prompt_name": "ticket_summariser",
+    "event": "ROLLBACK",
+    "version": "v2",
+    "reason": "Manual rollback test"
+  }
+]
