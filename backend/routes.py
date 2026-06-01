@@ -10,6 +10,13 @@ from datetime import datetime
 
 router = APIRouter()
 
+# Day 12 — security layer
+try:
+    from agents.security_layer import sanitise_input, validate_output, get_security_report
+    SECURITY_AVAILABLE = True
+except ImportError:
+    SECURITY_AVAILABLE = False
+
 
 # ── Request models ─────────────────────────────────────────────────────────
 
@@ -156,6 +163,13 @@ async def run_pipeline(request: FeatureRequest):
         run_id = f"RUN_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         request.run_id = run_id
 
+        # Day 12 — sanitise input before anything runs
+        if SECURITY_AVAILABLE:
+            sec_check = sanitise_input(request.feature_hypothesis, "run-pipeline")
+            if sec_check["blocked"]:
+                return {"status": "blocked", "reason": "Input failed security check", "threats": sec_check["threats"]}
+            request.feature_hypothesis = sec_check["sanitised_text"]
+
         print(f"\n{'='*60}")
         print(f"FULL PIPELINE RUN — {run_id}")
         print(f"Feature: {request.feature_hypothesis}")
@@ -258,6 +272,25 @@ async def audit_trail():
         "summary": get_audit_summary(),
         "entries": load_audit_trail()
     }
+
+
+@router.get("/security-report")
+async def security_report():
+    """Returns the full security event log."""
+    if SECURITY_AVAILABLE:
+        return get_security_report()
+    return {"status": "security layer not available"}
+
+
+@router.post("/calibrate")
+async def calibrate():
+    """Runs the Calibration Analysis Agent over the audit trail."""
+    try:
+        from agents.calibration_agent import analyse_calibration
+        result = analyse_calibration()
+        return {"status": "success", "report": result}
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
 
 
 @router.post("/update-outcome")
