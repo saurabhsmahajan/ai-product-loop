@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from memory.chroma_store import retrieve_similar
 
 
-def retrieve_context(query: str, mode: str = "both", n_results: int = 3) -> str:
+def retrieve_context(query: str, n_results: int = 3, source: str = "both", mode: str = None) -> str:
     """
     Retrieves relevant past context from ChromaDB.
     mode: "decisions" | "interviews" | "both"
@@ -14,7 +14,9 @@ def retrieve_context(query: str, mode: str = "both", n_results: int = 3) -> str:
 
     context_parts = []
 
-    if mode in ("decisions", "both"):
+    # support both old "mode" and new "source" parameter
+    _filter = source if source != "both" or mode is None else mode
+    if _filter in ("decisions", "both"):
         decision_results = retrieve_similar(query, "decisions", n_results)
         if decision_results:
             context_parts.append("RELEVANT PAST DECISIONS:")
@@ -23,7 +25,7 @@ def retrieve_context(query: str, mode: str = "both", n_results: int = 3) -> str:
                     f"- (similarity distance: {r['distance']:.3f})\n  {r['text'][:300]}"
                 )
 
-    if mode in ("interviews", "both"):
+    if _filter in ("interviews", "both"):
         interview_results = retrieve_similar(query, "interviews", n_results)
         if interview_results:
             context_parts.append("\nRELEVANT PAST INTERVIEW INSIGHTS:")
