@@ -1,0 +1,22 @@
+{
+  "prompt_name": "ticket_summariser",
+  "active_version": "v2",
+  "versions": [
+    {
+      "version": "v1",
+      "description": "Basic summariser",
+      "created_at": "2026-06-01T13:22:39.668429"
+    },
+    {
+      "version": "v2",
+      "description": "Strict factual summariser",
+      "created_at": "2026-06-01T13:22:39.704958"
+    },
+    {
+      "version": "v3",
+      "description": "Structured 3-sentence summariser with action item",
+      "created_at": "2026-06-01T13:22:39.726703"
+    }
+  ],
+  "previous_version": "v3"
+}
