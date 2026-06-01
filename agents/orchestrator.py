@@ -7,6 +7,21 @@ from datetime import datetime
 from agents.utils import call_llm, parse_json_response
 from agents.prompts import ORCHESTRATOR_PROMPT
 
+# Day 11 additions
+try:
+    from memory.rag_retriever import retrieve_context
+    RAG_AVAILABLE = True
+except ImportError:
+    RAG_AVAILABLE = False
+    print("⚠️  RAG retriever not found — running without memory context.")
+
+try:
+    from agents.slack_notifier import send_slack_alert
+    SLACK_AVAILABLE = True
+except ImportError:
+    SLACK_AVAILABLE = False
+    print("⚠️  Slack notifier not found — alerts disabled.")
+
 
 def load_signal(filepath: str, label: str) -> dict:
     """Loads a JSON signal file. Returns empty dict with warning if missing."""
@@ -90,6 +105,18 @@ def run_orchestrator(feature_hypothesis: str) -> dict:
     else:
         signals["persona_simulation"] = load_signal(persona_path, "Persona simulation")
 
+    # Step 2b — Load competitive intel if available (Day 11)
+    competitive_context = ""
+    if RAG_AVAILABLE:
+        print("Retrieving competitive intel and past decisions from RAG memory...")
+        competitive_context = retrieve_context(
+            query=f"competitive signals product decisions {feature_hypothesis}",
+            source="both"
+        )
+        print(f"RAG context retrieved: {len(competitive_context)} chars\n")
+    else:
+        print("Skipping RAG retrieval — module not available.\n")
+
     # Step 3 — Aggregate confidence score
     agg_confidence = aggregate_confidence(signals)
     print(f"Aggregated pipeline confidence score: {agg_confidence}")
@@ -129,6 +156,8 @@ Aggregated confidence score: {agg_confidence}
 Routing decision: {route}
 Routing reason: {routing_reason}
 
+{f"MEMORY CONTEXT (past decisions + competitive intel):{chr(10)}{competitive_context}" if competitive_context else ""}
+
 Produce the full orchestrator pipeline state report.
 """
     )
@@ -152,6 +181,18 @@ Produce the full orchestrator pipeline state report.
         json.dump(report, f, indent=2)
 
     print(f"✅ Orchestrator report saved to {output_path}")
+
+    # Step 8 — Fire Slack alert (Day 11)
+    if SLACK_AVAILABLE:
+        alert_type = "escalation" if route == "HUMAN_ESCALATION" else "info"
+        alert_msg = (
+            f"*Orchestrator complete* — Feature: _{feature_hypothesis[:60]}_\n"
+            f"Confidence: `{agg_confidence}` | Route: `{route}`\n"
+            f"Reason: {routing_reason}"
+        )
+        send_slack_alert(alert_msg, alert_type=alert_type)
+        print("📨 Slack alert sent.")
+
     return report
 
 

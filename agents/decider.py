@@ -6,12 +6,19 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from agents.utils import call_llm, parse_json_response
 from agents.prompts import DECIDER_PROMPT
 
+try:
+    from agents.slack_notifier import send_slack_alert
+    SLACK_AVAILABLE = True
+except ImportError:
+    SLACK_AVAILABLE = False
+
 
 def run_decider(orchestrator_report: dict, feature_hypothesis: str) -> dict:
     """
     Receives the full Orchestrator context package.
     Produces a documented GO / NO_GO / CONDITIONAL_GO decision
     with confidence score and full reasoning chain.
+    Fires a Slack alert after the decision is saved (Day 11).
     """
 
     print("\n" + "=" * 60)
@@ -45,20 +52,44 @@ Produce a documented GO / NO_GO / CONDITIONAL_GO decision.
         json.dump(report, f, indent=2)
 
     # Print summary
-    print(f"Decision:          {report.get('decision')}")
-    print(f"Confidence score:  {report.get('confidence_score')}")
-    print(f"Escalate to human: {report.get('escalate_to_human')}")
+    decision    = report.get("decision")
+    confidence  = report.get("confidence_score")
+    escalate    = report.get("escalate_to_human")
+
+    print(f"Decision:          {decision}")
+    print(f"Confidence score:  {confidence}")
+    print(f"Escalate to human: {escalate}")
     print(f"Key risks:         {report.get('key_risks')}")
     print(f"\nReasoning chain:")
     for step in report.get("reasoning_chain", []):
         print(f"  {step}")
-
     print(f"\n✅ Decider report saved to {output_path}")
+
+    # Slack alert (Day 11)
+    if SLACK_AVAILABLE:
+        if escalate:
+            alert_type = "escalation"
+            msg = (
+                f"*Decision: ESCALATED TO HUMAN*\n"
+                f"Feature: _{feature_hypothesis[:60]}_\n"
+                f"Confidence: `{confidence}` — below threshold after reasoning.\n"
+                f"Reason: {report.get('escalation_reason', 'N/A')}"
+            )
+        else:
+            alert_type = "go" if decision == "GO" else "no-go"
+            msg = (
+                f"*Decision: {decision}*\n"
+                f"Feature: _{feature_hypothesis[:60]}_\n"
+                f"Confidence: `{confidence}`\n"
+                f"Key risks: {', '.join(report.get('key_risks', [])[:2])}"
+            )
+        send_slack_alert(msg, alert_type=alert_type)
+        print("📨 Slack alert sent.")
+
     return report
 
 
 if __name__ == "__main__":
-    # Load the orchestrator report
     orch_path = "data/orchestrator_report.json"
     if not os.path.exists(orch_path):
         print("Orchestrator report not found — run orchestrator.py first.")

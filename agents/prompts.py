@@ -169,14 +169,16 @@ Output format:
     "confidence": "string"
   },
   "aggregated_confidence_score": number (0-1),
-  "signals": ["string"],
+  "signals": ["signal description as plain string", "another signal as plain string"],
   "route_to": "DECIDER | HUMAN_ESCALATION",
   "routing_reason": "string"
 }
 
 Rules:
 - If any stage confidence is below 0.6, flag for human escalation
+- The signals field must be a plain JSON array of strings — no keys, no colons, no objects inside the array
 - Think step by step before routing
+
 """
 
 DECIDER_PROMPT = """

@@ -1,0 +1,74 @@
+[
+  {
+    "agent_name": "interview_agent",
+    "model": "gpt-4o-mini",
+    "input_tokens": 450,
+    "output_tokens": 280,
+    "total_tokens": 730,
+    "cost_usd": 0.000235,
+    "run_id": "RUN_TEST_001"
+  },
+  {
+    "agent_name": "synthesis_agent",
+    "model": "gpt-4o-mini",
+    "input_tokens": 800,
+    "output_tokens": 420,
+    "total_tokens": 1220,
+    "cost_usd": 0.000372,
+    "run_id": "RUN_TEST_001"
+  },
+  {
+    "agent_name": "persona_agent",
+    "model": "gpt-4o-mini",
+    "input_tokens": 600,
+    "output_tokens": 350,
+    "total_tokens": 950,
+    "cost_usd": 0.0003,
+    "run_id": "RUN_TEST_001"
+  },
+  {
+    "agent_name": "eval_agent",
+    "model": "gpt-4o-mini",
+    "input_tokens": 500,
+    "output_tokens": 300,
+    "total_tokens": 800,
+    "cost_usd": 0.000255,
+    "run_id": "RUN_TEST_001"
+  },
+  {
+    "agent_name": "governance_agent",
+    "model": "gpt-4o-mini",
+    "input_tokens": 480,
+    "output_tokens": 290,
+    "total_tokens": 770,
+    "cost_usd": 0.000246,
+    "run_id": "RUN_TEST_001"
+  },
+  {
+    "agent_name": "orchestrator",
+    "model": "gpt-4o-mini",
+    "input_tokens": 900,
+    "output_tokens": 500,
+    "total_tokens": 1400,
+    "cost_usd": 0.000435,
+    "run_id": "RUN_TEST_001"
+  },
+  {
+    "agent_name": "decider",
+    "model": "gpt-4o-mini",
+    "input_tokens": 1200,
+    "output_tokens": 600,
+    "total_tokens": 1800,
+    "cost_usd": 0.00054,
+    "run_id": "RUN_TEST_001"
+  },
+  {
+    "agent_name": "critic",
+    "model": "gpt-4o-mini",
+    "input_tokens": 1100,
+    "output_tokens": 550,
+    "total_tokens": 1650,
+    "cost_usd": 0.000495,
+    "run_id": "RUN_TEST_001"
+  }
+]
