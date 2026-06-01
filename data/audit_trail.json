@@ -1,0 +1,55 @@
+[
+  {
+    "log_id": "LOG_20260529_104657_979662",
+    "run_id": "RUN_20260528_154313",
+    "logged_at": "2026-05-29T10:46:57.979693",
+    "feature": "An AI assistant that automatically summarises customer support tickets and suggests responses to agents.",
+    "stage": "Stage 03 \u2014 Decide",
+    "agent_name": "Decider + Reflexion Loop",
+    "input_signals": [
+      "Hallucination rate is high",
+      "Governance concerns flagged",
+      "Trust score is low",
+      "Calibration is overconfident",
+      "Legal compliance issues exist"
+    ],
+    "reasoning_chain": [
+      "Step 1: The feature aims to automate the summarization of customer support tickets and suggest responses, which is a high-impact area for increasing efficiency in customer support.",
+      "Step 2: The evaluation stage identifies significant risks, including a high hallucination rate, governance issues related to compliance, a low trust score from users, and overconfidence in the AI's output.",
+      "Step 3: While the confidence score of 0.475 indicates that there are critical issues, it isn't completely unviable. Therefore, the decision can lean towards a Conditional Go if specific risks are adequately addressed."
+    ],
+    "decision": "CONDITIONAL_GO",
+    "confidence_score": 0.475,
+    "escalated_to_human": true,
+    "model_used": "gpt-4o-mini",
+    "tokens_consumed": 0,
+    "outcome": "PENDING",
+    "outcome_notes": ""
+  },
+  {
+    "log_id": "LOG_20260529_125656_155286",
+    "run_id": "RUN_20260529_125552",
+    "logged_at": "2026-05-29T12:56:56.155313",
+    "feature": "An AI assistant that automatically summarises customer support tickets and suggests responses to agents.",
+    "stage": "Stage 03 \u2014 Decide",
+    "agent_name": "Decider + Reflexion Loop",
+    "input_signals": [
+      "high hallucination rate",
+      "governance flagged",
+      "trust score low",
+      "overconfident calibration"
+    ],
+    "reasoning_chain": [
+      "Step 1: The feature aims to automate customer support ticket summarization and response suggestions, which can enhance operational efficiency when functioning correctly.",
+      "Step 2: The evaluations indicate a high hallucination rate, which has resulted in a low trust score of 3. While this raises concerns about reliability, there are potential mitigation strategies to explore, such as refining the training dataset, improving model calibration, and integrating human feedback loops.",
+      "Step 3: Governance has flagged the feature due to high EU AI Act tier concerns which necessitate compliance measures. Exploring alternative approaches such as incorporating rule-based systems or hybrid models could help enhance compliance and trustworthiness."
+    ],
+    "decision": "CONDITIONAL_GO",
+    "confidence_score": 0.6,
+    "escalated_to_human": true,
+    "model_used": "gpt-4o-mini",
+    "tokens_consumed": 0,
+    "outcome": "PENDING",
+    "outcome_notes": ""
+  }
+]

@@ -1,0 +1,82 @@
+{
+  "feature_hypothesis": "An AI assistant that automatically summarises customer support tickets and suggests responses to agents.",
+  "personas": [
+    {
+      "persona": "Enterprise Buyer",
+      "reaction_score": 5,
+      "first_reaction": "This could streamline our support process, but I have concerns about reliability.",
+      "objections": [
+        "Potential inaccuracies in summarization could lead to miscommunication.",
+        "Data privacy and security concerns with handling customer information."
+      ],
+      "champion_or_blocker": "blocker",
+      "key_quote": "We need to ensure that any automation doesn't compromise the quality of our customer interactions."
+    },
+    {
+      "persona": "SMB Owner",
+      "reaction_score": 8,
+      "first_reaction": "This could save us a lot of time and improve our support efficiency.",
+      "objections": [
+        "We need to ensure it integrates well with our existing tools.",
+        "Will this really reduce our workload or just complicate the process?"
+      ],
+      "champion_or_blocker": "champion",
+      "key_quote": "If it helps us respond faster and better, I'm all for it."
+    },
+    {
+      "persona": "End User",
+      "reaction_score": 8,
+      "first_reaction": "This could really speed up my workflow and reduce response times.",
+      "objections": [
+        "I hope it accurately captures the nuances of customer issues.",
+        "I worry about over-relying on AI for important interactions."
+      ],
+      "champion_or_blocker": "champion",
+      "key_quote": "If it simplifies my task and helps me respond faster, I'm all in!"
+    },
+    {
+      "persona": "IT / Security Lead",
+      "reaction_score": 4,
+      "first_reaction": "I'm concerned about the potential for data leakage with automated processing of sensitive customer information.",
+      "objections": [
+        "Risk of exposing sensitive customer data.",
+        "Insufficient controls over AI-generated content."
+      ],
+      "champion_or_blocker": "blocker",
+      "key_quote": "We must prioritize data security and ensure compliance before implementing any AI solutions."
+    },
+    {
+      "persona": "Legal / Compliance",
+      "reaction_score": 6,
+      "first_reaction": "There are potential risks regarding PII and compliance with EU AI Act regulations.",
+      "objections": [
+        "Possible identification of PII in customer tickets",
+        "Liability concerns over AI-generated responses"
+      ],
+      "champion_or_blocker": "blocker",
+      "key_quote": "We must ensure that customer data is handled in strict compliance with the regulations."
+    },
+    {
+      "persona": "Champion / Power User",
+      "reaction_score": 9,
+      "first_reaction": "This feature could significantly boost our efficiency in handling customer support tickets.",
+      "objections": [
+        "It needs to maintain accuracy in understanding complex queries.",
+        "We need to ensure it doesn't reduce the personal touch in responses."
+      ],
+      "champion_or_blocker": "champion",
+      "key_quote": "An AI assistant that learns from our interactions will empower us to provide even better service to our customers."
+    }
+  ],
+  "avg_reaction_score": 6.67,
+  "blockers": [
+    "Enterprise Buyer",
+    "IT / Security Lead",
+    "Legal / Compliance"
+  ],
+  "champions": [
+    "SMB Owner",
+    "End User",
+    "Champion / Power User"
+  ]
+}
