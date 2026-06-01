@@ -3,47 +3,47 @@
   "pain_themes": [
     {
       "theme_id": "T1",
-      "theme_name": "Overwhelming Volume of Support Tickets",
-      "description": "Users feel overwhelmed by the sheer volume of support tickets, which leads to prioritization challenges and potential oversight of urgent issues.",
+      "theme_name": "Overwhelming Ticket Volume",
+      "description": "Users struggle with managing a high volume of support tickets, leading to missed priorities and delays in responses.",
       "frequency_score": 8,
-      "severity_score": 7,
-      "opportunity_score": 11,
+      "severity_score": 9,
+      "opportunity_score": 12.5,
       "supporting_quotes": [
-        "too many sales, too many issues, too many escalation as the response were slow",
-        "we sometimes miss the high impact issue in pile of these ticket load"
+        "the number of tickets we get the issue then to prioritize them",
+        "too many sales, too many issues, too many escalation as the response were slow"
       ]
     },
     {
       "theme_id": "T2",
-      "theme_name": "Ineffective Manual Ticket Prioritization",
-      "description": "Current methods for prioritizing support tickets are manual and can result in misprioritization, particularly during high-pressure situations.",
+      "theme_name": "Manual Prioritization Inefficiencies",
+      "description": "Relying on manual assessments to prioritize tickets often leads to misallocation of focus, impacting urgent and high revenue-related issues.",
       "frequency_score": 7,
       "severity_score": 8,
-      "opportunity_score": 10,
+      "opportunity_score": 11,
       "supporting_quotes": [
-        "I try and look into top 10 tickets in my bucket and try and do manual assessment on priority based on impact",
-        "the consequences was that I missed a high revenue impact ticket"
+        "I try and look into top 10 tickets in my bucket and try and do manual assessment on priority",
+        "I missed a high revenue impact ticket, while trying to solve a high number of customer impact ticket"
       ]
     },
     {
       "theme_id": "T3",
-      "theme_name": "Difficulty in Assessing Impact of Ticket Failures",
-      "description": "Users struggle to assess the impact of issues reported in tickets, which can lead to further complications such as missing significant revenue-impacting tickets.",
+      "theme_name": "Difficulty in Understanding Impact",
+      "description": "Users find it hard to extract and assess the impact of ticket failures, leading to substantial errors in ticket handling.",
       "frequency_score": 6,
       "severity_score": 8,
-      "opportunity_score": 9,
+      "opportunity_score": 10,
       "supporting_quotes": [
         "impact of the failure",
-        "the consequences was that I missed a high revenue impact ticket"
+        "missed a high revenue impact ticket"
       ]
     },
     {
       "theme_id": "T4",
-      "theme_name": "Time Consumption in Ticket Management",
-      "description": "The process of summarizing and organizing information from support tickets is time-consuming, taking about 4-5 hours daily, leading to productivity inefficiencies.",
-      "frequency_score": 5,
+      "theme_name": "Time-Consuming Ticket Summarization",
+      "description": "The process of summarizing and organizing ticket information is excessively time-consuming due to ticket volume.",
+      "frequency_score": 6,
       "severity_score": 7,
-      "opportunity_score": 8,
+      "opportunity_score": 9.5,
       "supporting_quotes": [
         "4-5 hours per day",
         "high volume of tickets"
@@ -51,16 +51,15 @@
     },
     {
       "theme_id": "T5",
-      "theme_name": "Escalation Overload During Peak Times",
-      "description": "During peak sales periods like Black Friday, the escalation of issues becomes overwhelming, putting further strain on resources and response times.",
+      "theme_name": "Escalation Challenges",
+      "description": "Users face challenges with escalation processes during peak periods, causing delays and increased pressure.",
       "frequency_score": 5,
       "severity_score": 7,
-      "opportunity_score": 8,
+      "opportunity_score": 8.5,
       "supporting_quotes": [
-        "too many escalation as the response were slow",
-        "on a black friday sale"
+        "too many escalations as the response were slow"
       ]
     }
   ],
-  "top_opportunity": "Develop an AI-powered solution to automate ticket prioritization and summarization to manage overwhelming ticket volumes more effectively."
+  "top_opportunity": "Overwhelming Ticket Volume"
 }

@@ -106,7 +106,9 @@ def run_synthesis(data_folder: str = "data") -> dict:
         print("⚠️  RAG not available — skipping memory store.")
 
     # Step 6 — Auto-create Jira tickets for top 3 themes (Day 11)
-    if JIRA_AVAILABLE:
+    # Disabled here — tickets created by n8n workflow to avoid duplicates.
+    # To re-enable direct creation, change False back to True.
+    if False and JIRA_AVAILABLE:
         print("\nCreating Jira tickets for top pain themes...")
         sorted_themes = sorted(
             opportunity_map.get("pain_themes", []),

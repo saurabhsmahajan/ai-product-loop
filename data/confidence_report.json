@@ -3,7 +3,7 @@
   "estimated_actual_accuracy": 0.5,
   "calibration_gap": 0.375,
   "brier_score": 0.3662,
-  "trust_score": 3,
+  "trust_score": 2,
   "calibration_verdict": "OVERCONFIDENT",
-  "recommendation": "Revise the model to improve alignment with the actual outcomes and ensure outputs strictly adhere to the source context to avoid unfounded claims."
+  "recommendation": "Significantly reduce stated confidence levels and improve alignment of outputs with factual information to enhance accuracy."
 }

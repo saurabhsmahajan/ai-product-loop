@@ -1,11 +1,11 @@
 {
-  "pipeline_run_id": "RUN_20260529_125631",
+  "pipeline_run_id": "RUN_20260601_163248",
   "stage_summaries": {
-    "discover": "Develop an AI-powered solution to automate ticket prioritization and summarization to manage overwhelming ticket volumes more effectively.",
-    "evaluate": "Hallucination rate is high with a verdict of FAIL, governance flagged due to high EU AI Act tier, and trust score is low at 3.",
-    "confidence": "Aggregated confidence score is 0.323, indicating significant doubts about the feasibility and trustworthiness of the feature."
+    "discover": "Identified overwhelming ticket volume as a significant issue but faced governance concerns and low trust scores.",
+    "evaluate": "Evaluation resulted in a high hallucination rate and an overall low confidence score due to overconfidence in the feature's capabilities.",
+    "confidence": "The aggregated confidence score of 0.297 is substantially below the acceptable threshold of 0.6, flagging the feature for human escalation."
   },
-  "aggregated_confidence_score": 0.323,
+  "aggregated_confidence_score": 0.297,
   "signals": [
     "high hallucination rate",
     "governance flagged",
@@ -13,5 +13,5 @@
     "overconfident calibration"
   ],
   "route_to": "HUMAN_ESCALATION",
-  "routing_reason": "Aggregated confidence 0.323 is below 0.6 threshold \u2014 escalating to human."
+  "routing_reason": "Aggregated confidence 0.297 is below 0.6 threshold \u2014 escalating to human."
 }

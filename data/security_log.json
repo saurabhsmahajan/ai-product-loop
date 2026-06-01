@@ -1,0 +1,42 @@
+[
+  {
+    "event_id": "SEC_20260601_125703_886118",
+    "timestamp": "2026-06-01T12:57:03.886154",
+    "event_type": "PROMPT_INJECTION",
+    "agent": "interview_agent",
+    "detail": "Pattern matched: system prompt",
+    "blocked": true
+  },
+  {
+    "event_id": "SEC_20260601_125703_887606",
+    "timestamp": "2026-06-01T12:57:03.887622",
+    "event_type": "PII_DETECTED",
+    "agent": "synthesis_agent",
+    "detail": "PII type: email \u2014 redacted from input",
+    "blocked": false
+  },
+  {
+    "event_id": "SEC_20260601_125703_903213",
+    "timestamp": "2026-06-01T12:57:03.903231",
+    "event_type": "PII_DETECTED",
+    "agent": "synthesis_agent",
+    "detail": "PII type: phone \u2014 redacted from input",
+    "blocked": false
+  },
+  {
+    "event_id": "SEC_20260601_125703_918964",
+    "timestamp": "2026-06-01T12:57:03.918984",
+    "event_type": "SCHEMA_VIOLATION",
+    "agent": "decider",
+    "detail": "Missing required keys: ['confidence_score', 'reasoning_chain']",
+    "blocked": true
+  },
+  {
+    "event_id": "SEC_20260601_125824_834072",
+    "timestamp": "2026-06-01T12:58:24.834099",
+    "event_type": "PROMPT_INJECTION",
+    "agent": "run-pipeline",
+    "detail": "Pattern matched: system prompt",
+    "blocked": true
+  }
+]

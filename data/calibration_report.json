@@ -1,0 +1,41 @@
+{
+  "status": "complete",
+  "analysed_at": "2026-06-01T12:59:34.656608",
+  "entries_analysed": 3,
+  "calibration_metrics": {
+    "total_decisions": 3,
+    "resolved_outcomes": 0,
+    "brier_score": null,
+    "avg_confidence_all": 0.498,
+    "escalation_rate": 1.0,
+    "avg_conf_escalated": 0.498,
+    "avg_conf_non_escalated": null,
+    "decision_breakdown": {
+      "GO": 0,
+      "NO_GO": 1,
+      "CONDITIONAL_GO": 2
+    },
+    "outcome_breakdown": {
+      "PENDING": 3,
+      "CORRECT": 0,
+      "INCORRECT": 0,
+      "PARTIALLY_CORRECT": 0
+    }
+  },
+  "current_thresholds": {
+    "orchestrator_escalation": 0.6,
+    "decider_escalation": 0.7,
+    "reflexion_critique": 0.7,
+    "model_upgrade": 0.75
+  },
+  "recommended_thresholds": {
+    "orchestrator_escalation": 0.6,
+    "decider_escalation": 0.7,
+    "reflexion_critique": 0.7,
+    "model_upgrade": 0.75
+  },
+  "threshold_changes": [],
+  "calibration_verdict": "INSUFFICIENT_DATA",
+  "reasoning": "There are fewer than 5 resolved outcomes in the audit trail, preventing a reliable assessment of calibration. Therefore, no changes to the thresholds are warranted at this time.",
+  "action_required": false
+}
