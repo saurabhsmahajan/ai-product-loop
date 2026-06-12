@@ -1,0 +1,57 @@
+# config/performance_baselines.yaml
+# NIST MEASURE 2.7 | ISO/IEC 42001 Clause 9
+# Update baseline values after every 10 pipeline runs
+# Current values are informed estimates — replace with real measurements
+
+baseline_version: "2026-06-12-v1"
+established_from_runs: 0
+note: "Placeholder baselines — update with real numbers after 10 runs"
+
+metrics:
+
+  confidence_score:
+    description: "Orchestrator aggregated_confidence from orchestrator.py"
+    baseline: 0.82
+    warning_threshold: 0.70
+    critical_threshold: 0.60
+    action_at_warning: "Flag run — human review of outputs"
+    action_at_critical: "Halt pipeline — escalate to owner"
+
+  escalation_rate:
+    description: "Proportion of runs where escalated_to_human = true"
+    baseline: 0.15
+    warning_threshold: 0.35
+    critical_threshold: 0.50
+    action_at_warning: "Review Decider reasoning chains for systematic weakness"
+    action_at_critical: "Review Orchestrator weighting — possible model drift"
+
+  cost_per_run_usd:
+    description: "Total cost per full pipeline run from agents/cost_tracker.py"
+    baseline: 0.003
+    warning_threshold: 0.010
+    critical_threshold: 0.020
+    action_at_warning: "Review model routing — gpt-4o upgrade may be triggering too often"
+    action_at_critical: "Pause pipeline — investigate routing logic"
+
+  bias_flag_rate:
+    description: "Proportion of runs where bias_flags_raised = true"
+    baseline: 0.10
+    warning_threshold: 0.30
+    critical_threshold: 0.50
+    action_at_warning: "Review input data for systematic bias patterns"
+    action_at_critical: "Suspend feature hypothesis inputs — data quality issue"
+
+  hallucination_faithfulness_score:
+    description: "Average faithfulness score from agents/eval_agent.py"
+    baseline: 0.85
+    warning_threshold: 0.75
+    critical_threshold: 0.65
+    action_at_warning: "Review synthesis agent outputs for context quality"
+    action_at_critical: "Halt pipeline — ChromaDB context may be corrupted"
+
+drift_detection:
+  window_size: 5
+  description: "Rolling window of runs for trend calculation"
+  alert_channel: "audit_log + slack"
+  rollback_trigger: "Any metric reaches critical threshold"
+  rollback_action: "Restore ChromaDB from last clean snapshot"

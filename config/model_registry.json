@@ -1,0 +1,58 @@
+{
+    "registry_version": "1.0",
+    "last_updated": "2026-06-12",
+    "nist_control": "NIST MEASURE 2.2 — TEVV records",
+    "iso_42001_clause": "Clause 8 — Operational planning and control",
+    "notes": "Update performance_baseline fields after every 10 pipeline runs",
+    "models": [
+      {
+        "model_id": "gpt-4o-mini",
+        "provider": "OpenAI",
+        "agent_roles": [
+          "synthesis_agent",
+          "persona_agent",
+          "hallucination_eval_agent",
+          "confidence_calibration_agent",
+          "governance_agent",
+          "orchestrator_agent",
+          "decider_agent",
+          "reflexion_agent",
+          "calibration_agent",
+          "business_impact_agent"
+        ],
+        "routing_rule": "Default — all agents unless aggregated_confidence < 0.75",
+        "temperature": 0.3,
+        "deployed_date": "2026-06-01",
+        "deprecated_date": null,
+        "cost_per_1m_input_tokens_usd": 0.15,
+        "cost_per_1m_output_tokens_usd": 0.60,
+        "performance_baseline": {
+          "avg_confidence_score": null,
+          "avg_cost_per_run_usd": 0.003,
+          "escalation_rate": null,
+          "bias_flag_rate": null,
+          "test_run_count": 0,
+          "note": "Update after 10 governance-instrumented runs"
+        }
+      },
+      {
+        "model_id": "gpt-4o",
+        "provider": "OpenAI",
+        "agent_roles": [
+          "orchestrator_agent",
+          "decider_agent",
+          "reflexion_agent"
+        ],
+        "routing_rule": "Upgrade only — triggered when aggregated_confidence < 0.75",
+        "temperature": 0.3,
+        "deployed_date": "2026-06-01",
+        "deprecated_date": null,
+        "cost_per_1m_input_tokens_usd": 2.50,
+        "cost_per_1m_output_tokens_usd": 10.00,
+        "performance_baseline": {
+          "avg_confidence_score": null,
+          "note": "Insufficient upgrade-triggered runs for baseline"
+        }
+      }
+    ]
+  }
