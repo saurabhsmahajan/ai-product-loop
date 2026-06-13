@@ -18,6 +18,47 @@ except ImportError:
     SECURITY_AVAILABLE = False
 
 
+# ── GRC helper ────────────────────────────────────────────────────────────
+
+import re as _re
+
+def _extract_grc_fields(gov_result: dict, eval_report: dict) -> dict:
+    """
+    Extracts GRC fields from governance and eval reports
+    for passing into log_decision().
+    NIST MEASURE 2.13 | EU AI Act Art. 12 | ISO 42001 Clause 8
+    """
+    pii_detected = gov_result.get("pii_detected", False)
+    pii_details  = gov_result.get("pii_details", "")
+
+    pii_categories = []
+    if pii_detected and "PII types found" in str(pii_details):
+        try:
+            match = _re.search(r"\[(.+?)\]", str(pii_details))
+            if match:
+                pii_categories = [p.strip().strip("'").strip('"') for p in match.group(1).split(",")]
+        except Exception:
+            pii_categories = ["unknown"]
+
+    faithfulness = eval_report.get("faithfulness_score")
+    if faithfulness is None:
+        grounding = "NOT_EVALUATED"
+    elif float(faithfulness) >= 0.70:
+        grounding = "PASS"
+    else:
+        grounding = "FAIL"
+
+    return {
+        "pii_categories_detected": pii_categories,
+        "pii_items_redacted":      len(pii_categories),
+        "eu_ai_act_tier":          gov_result.get("eu_ai_act_risk_tier", "limited_risk"),
+        "bias_flags_raised":       gov_result.get("bias_flags_raised", False),
+        "bias_risk_level":         gov_result.get("bias_risk_level", "none"),
+        "grounding_result":        grounding,
+        "data_source":             "feature_hypothesis",
+    }
+
+
 # ── Request models ─────────────────────────────────────────────────────────
 
 class FeatureRequest(BaseModel):
@@ -130,6 +171,11 @@ async def learn(request: FeatureRequest):
 
         store_decision(run_id, request.feature_hypothesis, orch, dec, ref)
 
+        # ── GRC fields from governance and eval reports ─────────────────────
+        gov_report  = load_json("data/governance_report.json")
+        eval_report = load_json("data/hallucination_eval_report.json")
+        grc         = _extract_grc_fields(gov_report, eval_report)
+
         entry = log_decision(
             run_id=run_id,
             feature=request.feature_hypothesis,
@@ -142,7 +188,9 @@ async def learn(request: FeatureRequest):
             escalated_to_human=final_decision.get("escalate_to_human", False),
             model_used="gpt-4o-mini",
             tokens_consumed=0,
-            outcome="PENDING"
+            outcome="PENDING",
+            # ── GRC ────────────────────────────────────────────────────────
+            **grc
         )
 
         return {
@@ -216,6 +264,11 @@ async def run_pipeline(request: FeatureRequest):
         final_decision = ref_result.get("final_decision", dec_result)
         store_decision(run_id, request.feature_hypothesis, orch_result, dec_result, ref_result)
 
+        # ── GRC fields from governance and eval reports ─────────────────────
+        gov_report_p  = load_json("data/governance_report.json")
+        eval_report_p = load_json("data/hallucination_eval_report.json")
+        grc_p         = _extract_grc_fields(gov_report_p, eval_report_p)
+
         log_entry = log_decision(
             run_id=run_id,
             feature=request.feature_hypothesis,
@@ -228,7 +281,9 @@ async def run_pipeline(request: FeatureRequest):
             escalated_to_human=final_decision.get("escalate_to_human", False),
             model_used="gpt-4o-mini",
             tokens_consumed=0,
-            outcome="PENDING"
+            outcome="PENDING",
+            # ── GRC ────────────────────────────────────────────────────────
+            **grc_p
         )
 
         from agents.cost_tracker import get_cost_report
@@ -243,6 +298,15 @@ async def run_pipeline(request: FeatureRequest):
             "confidence": final_decision.get("confidence_score"),
             "escalated":  final_decision.get("escalate_to_human"),
             "cost":       cost_report.get("total_cost_usd"),
+            # ── GRC summary ────────────────────────────────────────────────
+            "grc": {
+                "eu_ai_act_tier":     grc_p.get("eu_ai_act_tier"),
+                "bias_flags_raised":  grc_p.get("bias_flags_raised"),
+                "bias_risk_level":    grc_p.get("bias_risk_level"),
+                "pii_items_redacted": grc_p.get("pii_items_redacted"),
+                "grounding_result":   grc_p.get("grounding_result"),
+                "governance_version": "1.0",
+            },
             "stages": {
                 "discover":  discover_result,
                 "evaluate":  {"persona": persona_result, "confidence": confidence_result},

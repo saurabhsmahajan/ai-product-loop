@@ -3,6 +3,7 @@
 import json
 import os
 import sys
+import hashlib
 from datetime import datetime
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -37,31 +38,64 @@ def log_decision(
     escalated_to_human: bool,
     model_used: str = "gpt-4o-mini",
     tokens_consumed: int = 0,
-    outcome: str = "PENDING"
+    outcome: str = "PENDING",
+    # ── GRC fields (NIST MEASURE 2.13 | EU AI Act Art. 12 | ISO 42001 Clause 8)
+    pii_categories_detected: list = None,
+    pii_items_redacted: int = 0,
+    data_source: str = "feature_hypothesis",
+    eu_ai_act_tier: str = "limited_risk",
+    bias_flags_raised: bool = False,
+    bias_risk_level: str = "none",
+    grounding_result: str = "NOT_EVALUATED",
 ) -> dict:
     """
     Logs a single agent decision to the audit trail.
 
     outcome: PENDING until post-launch data arrives.
              Update to CORRECT or INCORRECT once real outcome is known.
+
+    GRC fields added (all optional — backward compatible):
+        pii_categories_detected : list of PII types found and redacted
+        pii_items_redacted      : count of PII items redacted
+        data_source             : origin of input data
+        eu_ai_act_tier          : EU AI Act risk classification
+        bias_flags_raised       : whether bias indicators were detected
+        bias_risk_level         : none / low / medium / high
+        grounding_result        : PASS / FAIL / NOT_EVALUATED
     """
 
+    # Auto-hash input signals for data lineage
+    input_hash = hashlib.sha256(
+        str(input_signals).encode()
+    ).hexdigest()[:16]
+
     entry = {
-        "log_id": f"LOG_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}",
-        "run_id": run_id,
-        "logged_at": datetime.now().isoformat(),
-        "feature": feature,
-        "stage": stage,
-        "agent_name": agent_name,
-        "input_signals": input_signals,
-        "reasoning_chain": reasoning_chain,
-        "decision": decision,
-        "confidence_score": confidence_score,
-        "escalated_to_human": escalated_to_human,
-        "model_used": model_used,
-        "tokens_consumed": tokens_consumed,
-        "outcome": outcome,
-        "outcome_notes": ""
+        # ── Core fields (unchanged) ────────────────────────────────────────
+        "log_id":               f"LOG_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}",
+        "run_id":               run_id,
+        "logged_at":            datetime.now().isoformat(),
+        "feature":              feature,
+        "stage":                stage,
+        "agent_name":           agent_name,
+        "input_signals":        input_signals,
+        "reasoning_chain":      reasoning_chain,
+        "decision":             decision,
+        "confidence_score":     confidence_score,
+        "escalated_to_human":   escalated_to_human,
+        "model_used":           model_used,
+        "tokens_consumed":      tokens_consumed,
+        "outcome":              outcome,
+        "outcome_notes":        "",
+        # ── GRC fields ─────────────────────────────────────────────────────
+        "input_hash":           input_hash,
+        "data_source":          data_source,
+        "eu_ai_act_tier":       eu_ai_act_tier,
+        "pii_categories_detected": pii_categories_detected or [],
+        "pii_items_redacted":   pii_items_redacted,
+        "bias_flags_raised":    bias_flags_raised,
+        "bias_risk_level":      bias_risk_level,
+        "grounding_result":     grounding_result,
+        "governance_version":   "1.0",
     }
 
     trail = load_audit_trail()
@@ -105,6 +139,11 @@ def get_audit_summary() -> dict:
     confidences = [e["confidence_score"] for e in trail]
     escalations = [e for e in trail if e["escalated_to_human"]]
 
+    # GRC metrics
+    bias_flagged  = [e for e in trail if e.get("bias_flags_raised")]
+    pii_detected  = [e for e in trail if e.get("pii_items_redacted", 0) > 0]
+    grounding_fail = [e for e in trail if e.get("grounding_result") == "FAIL"]
+
     return {
         "total_decisions": len(trail),
         "decision_breakdown": {
@@ -121,6 +160,14 @@ def get_audit_summary() -> dict:
         "avg_confidence_score": round(sum(confidences) / len(confidences), 3),
         "escalation_rate": round(len(escalations) / len(trail), 3),
         "total_tokens_consumed": sum(e["tokens_consumed"] for e in trail),
+        # ── GRC summary ────────────────────────────────────────────────────
+        "grc": {
+            "bias_flag_rate":    round(len(bias_flagged) / len(trail), 3),
+            "pii_detection_rate": round(len(pii_detected) / len(trail), 3),
+            "grounding_fail_rate": round(len(grounding_fail) / len(trail), 3),
+            "eu_ai_act_tiers":   list(set(e.get("eu_ai_act_tier", "unknown") for e in trail)),
+            "governance_version": "1.0",
+        },
     }
 
 
@@ -145,6 +192,11 @@ def print_audit_trail() -> None:
         print(f"  Escalated:  {entry['escalated_to_human']}")
         print(f"  Outcome:    {entry['outcome']}")
         print(f"  Model:      {entry['model_used']}")
+        print(f"  EU AI Act:  {entry.get('eu_ai_act_tier', 'N/A')}")
+        print(f"  Bias flags: {entry.get('bias_flags_raised', 'N/A')} — risk: {entry.get('bias_risk_level', 'N/A')}")
+        print(f"  PII items:  {entry.get('pii_items_redacted', 0)} redacted")
+        print(f"  Grounding:  {entry.get('grounding_result', 'N/A')}")
+        print(f"  Input hash: {entry.get('input_hash', 'N/A')}")
 
     summary = get_audit_summary()
     print(f"\n{'='*60}")

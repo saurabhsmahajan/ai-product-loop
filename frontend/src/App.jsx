@@ -3,6 +3,7 @@ import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, ReferenceLine
 } from "recharts";
+import GovernanceDashboard from "./GovernanceDashboard";
 
 // ─── Mock data (replace with FastAPI calls in production) ────────────────────
 const PAIN_THEMES = [
@@ -314,10 +315,11 @@ export default function App() {
   const [activeTab, setActiveTab] = useState("discover");
 
   const tabs = [
-    { id: "discover", label: "01 Discover", icon: "ti-users" },
-    { id: "evaluate", label: "02 Evaluate", icon: "ti-microscope" },
-    { id: "decide", label: "03 Decide", icon: "ti-git-branch" },
-    { id: "learn", label: "04 Learn", icon: "ti-brain" },
+    { id: "discover",   label: "01 Discover",   icon: "ti-users"        },
+    { id: "evaluate",   label: "02 Evaluate",   icon: "ti-microscope"   },
+    { id: "decide",     label: "03 Decide",     icon: "ti-git-branch"   },
+    { id: "learn",      label: "04 Learn",      icon: "ti-brain"        },
+    { id: "governance", label: "05 Governance", icon: "ti-shield-check" },
   ];
 
   return (
@@ -362,6 +364,7 @@ export default function App() {
             <DriftPanel />
           </div>
         )}
+        {activeTab === "governance" && <GovernanceDashboard />}
       </div>
 
       {/* Footer */}
