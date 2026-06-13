@@ -55,6 +55,18 @@ def run_governance_check(feature_description: str, decision: str) -> dict:
     else:
         print("✅ No PII detected in feature description.")
 
+    # Step 1b — Bias check (NIST MEASURE 2.11 | NIST AI 600-1 Risk 2)
+    print("Running bias indicator check...")
+    try:
+        from agents.bias_check import run_bias_check
+        bias_result = run_bias_check(
+            scrubbed_description,
+            context="feature_description"
+        )
+    except Exception as e:
+        print(f"⚠️  Bias check failed (non-blocking): {e}")
+        bias_result = {"bias_flags_raised": False, "risk_level": "unknown", "flag_count": 0, "error": str(e)}
+
     # Step 2 — Send to Governance Agent
     print("Running EU AI Act classification and bias check...\n")
 
@@ -75,9 +87,12 @@ Current go/no-go decision:
         print("Error: Could not generate governance report.")
         return {}
 
-    # Step 3 — Add PII scrubber results to report
-    report["pii_detected"] = len(pii_found) > 0
-    report["pii_details"] = f"PII types found and redacted: {pii_found}" if pii_found else "No PII detected."
+    # Step 3 — Add PII scrubber results and bias check to report
+    report["pii_detected"]      = len(pii_found) > 0
+    report["pii_details"]       = f"PII types found and redacted: {pii_found}" if pii_found else "No PII detected."
+    report["bias_assessment"]   = bias_result
+    report["bias_flags_raised"] = bias_result.get("bias_flags_raised", False)
+    report["bias_risk_level"]   = bias_result.get("risk_level", "unknown")
 
     # Step 4 — Save report
     os.makedirs("data", exist_ok=True)
@@ -88,7 +103,8 @@ Current go/no-go decision:
     # Step 5 — Print summary
     print(f"EU AI Act risk tier:   {report.get('eu_ai_act_risk_tier')}")
     print(f"PII detected:          {report.get('pii_detected')}")
-    print(f"Bias flags:            {report.get('bias_flags')}")
+    print(f"Bias flags (LLM):      {report.get('bias_flags')}")
+    print(f"Bias flags (NIST):     {report.get('bias_flags_raised')} — risk: {report.get('bias_risk_level')}")
     print(f"Governance verdict:    {report.get('governance_verdict')}")
     print(f"Required actions:      {report.get('required_actions')}")
     print(f"\n✅ Governance report saved to {output_path}")
