@@ -5,6 +5,7 @@ import sys, os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from agents.utils import call_llm, parse_json_response
 from agents.prompts import DECIDER_PROMPT
+from datetime import datetime
 
 try:
     from agents.slack_notifier import send_slack_alert
@@ -44,6 +45,14 @@ Produce a documented GO / NO_GO / CONDITIONAL_GO decision.
     if not report:
         print("Error: Could not generate decision report.")
         return {}
+
+    # ── EU AI Act Article 50 — Transparency disclosure ─────────────────────
+    try:
+        from agents.transparency import add_transparency_disclosure
+        run_id = f"RUN_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        report = add_transparency_disclosure(report, run_id=run_id)
+    except Exception as e:
+        print(f"⚠️  Transparency disclosure failed (non-blocking): {e}")
 
     # Save report
     os.makedirs("data", exist_ok=True)
