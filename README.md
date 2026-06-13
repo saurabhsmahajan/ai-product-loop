@@ -33,17 +33,17 @@ An AI agent conducts async user interviews and generates contextual follow-up qu
 Three parallel evaluation tracks run before any feature decision is made:
 - **Hallucination Eval Agent** — scores faithfulness and factuality separately. These are two different failure modes with different fixes.
 - **Confidence Calibration Agent** — measures the gap between how confident the AI says it is and how accurate it actually is. Uses Brier score.
-- **Responsible AI Governance Module** — classifies features under EU AI Act risk tiers, scrubs PII, detects bias in synthesis output.
+- **Responsible AI Governance Module** — classifies features under EU AI Act risk tiers, scrubs PII, runs NIST MEASURE 2.11 bias indicator check across three pattern categories (demographic, generalisation, loaded language).
 
 ### Stage 03 — Decide
 - **Orchestrator Agent** — aggregates all signals into one confidence score, retrieves relevant past decisions from RAG memory, injects competitive intelligence, and routes to the Decider or escalates to a human.
-- **Decider Agent** — produces a documented GO / NO_GO / CONDITIONAL_GO with a full reasoning chain.
+- **Decider Agent** — produces a documented GO / NO_GO / CONDITIONAL_GO with a full reasoning chain and EU AI Act Article 50 transparency disclosure appended to every output.
 - **Reflexion Loop (Critic Agent)** — reviews the Decider's reasoning. If critique score < 0.7, sends back for revision. After 2 failed passes, escalates to human and fires a Slack alert.
 - **Agent Security Layer** — blocks prompt injection attempts, redacts PII from inputs, validates output schema before any action is committed.
 
 ### Stage 04 — Learn
 - **ChromaDB** — stores every interview transcript and past decision as vector embeddings. Every agent retrieves relevant context before acting.
-- **Audit Trail** — logs every decision with input signals, reasoning chain, confidence score, escalation flag, model used, and tokens consumed.
+- **Audit Trail** — logs every decision with input signals, reasoning chain, confidence score, escalation flag, model used, tokens consumed, plus GRC fields: PII categories detected, bias flags, EU AI Act tier, grounding result, and input hash for data lineage.
 - **Calibration Analysis Agent** — reviews the audit trail, calculates Brier score, recommends threshold adjustments.
 - **Business Impact Translator** — maps metric movements to revenue estimates and auto-posts executive memos to Slack.
 
@@ -105,6 +105,8 @@ ai-product-loop/
 │   ├── eval_agent.py            # Hallucination evaluation
 │   ├── confidence.py            # Brier score calibration
 │   ├── governance.py            # EU AI Act + PII + bias
+│   ├── transparency.py          # EU AI Act Article 50 disclosure
+│   ├── bias_check.py            # NIST MEASURE 2.11 bias indicator
 │   ├── persona_agent.py         # Synthetic user simulation
 │   ├── orchestrator.py          # Signal aggregation + routing
 │   ├── decider.py               # GO/NO_GO recommendation
@@ -129,6 +131,22 @@ ai-product-loop/
 ├── frontend/
 │   └── src/
 │       └── App.jsx              # React dashboard
+├── docs/                        # Governance documents (NIST AI RMF · EU AI Act · ISO 42001 · AIGP)
+│   ├── AI_GOVERNANCE_POLICY.md
+│   ├── AI_SYSTEM_CARD.md
+│   ├── RESPONSIBLE_AI_USE.md
+│   ├── EU_AI_ACT_CLASSIFICATION.md
+│   ├── NIST_RMF_MAPPING.md
+│   ├── RISK_REGISTER.md
+│   ├── IMPACT_ASSESSMENT.md
+│   ├── NIST_600_1_ASSESSMENT.md
+│   ├── INCIDENT_RESPONSE.md
+│   ├── GAP_ANALYSIS.md
+│   └── IMPROVEMENT_LOG.md
+├── config/                      # Machine-readable governance configuration
+│   ├── agent_manifest.yaml      # Per-agent accountability and scope
+│   ├── model_registry.json      # Model version registry + baselines
+│   └── performance_baselines.yaml # Drift detection thresholds
 ├── prompts/
 │   └── versions/                # Versioned prompt files
 ├── notes/                       # Day-by-day build notes
@@ -232,6 +250,60 @@ Only `OPENAI_API_KEY` is required. Everything else has a dry-run fallback.
 
 ---
 
+---
+
+## AI Governance, Risk & Control (GRC)
+
+This pipeline implements a three-layer GRC framework aligned with four industry-standard frameworks:
+
+| Framework | Coverage |
+|---|---|
+| **NIST AI RMF** | Full GOVERN/MAP/MEASURE/MANAGE — 31 controls mapped |
+| **EU AI Act** | Limited Risk classification — Article 50 transparency disclosure on all Decide outputs |
+| **ISO/IEC 42001** | AI management system — policy, risk register, impact assessment, gap analysis |
+| **IAPP AIGP BOK v2.1** | Agentic AI governance — agent manifest, bias assessment, model registry |
+
+### Governance documents — [`/docs`](./docs)
+
+| Document | Purpose | Framework |
+|---|---|---|
+| `AI_GOVERNANCE_POLICY.md` | Scope, risk appetite, accountability, escalation path | NIST GOVERN 1 · ISO 42001 Clause 5 |
+| `AI_SYSTEM_CARD.md` | System transparency card — intended use, limits, metrics | EU AI Act Art. 50 · NIST GOVERN 6 |
+| `RESPONSIBLE_AI_USE.md` | Permitted and prohibited uses | ISO 42001 Annex A.6.1 · AIGP Domain 1 |
+| `EU_AI_ACT_CLASSIFICATION.md` | Risk tier per agent with classification reasoning | EU AI Act Art. 6 + Annex III |
+| `NIST_RMF_MAPPING.md` | Every control mapped to NIST function and subcategory | NIST MAP 1–5 |
+| `RISK_REGISTER.md` | 10 risks with likelihood, impact, and mitigation | ISO 42001 Clause 6.1.2 · NIST MAP 5 |
+| `IMPACT_ASSESSMENT.md` | 5 harm scenarios assessed — individuals, groups, society | ISO 42001 Clause 6.1.4 |
+| `NIST_600_1_ASSESSMENT.md` | 12 GenAI-specific risks assessed against the pipeline | NIST AI 600-1 (July 2024) |
+| `INCIDENT_RESPONSE.md` | SEV-1/2/3 definitions, response actions, RCA process | NIST MANAGE 1.3 · ISO 42001 Clause 10 |
+| `GAP_ANALYSIS.md` | ISO 42001 clause-by-clause implementation status | ISO 42001 All Clauses 4–10 |
+| `IMPROVEMENT_LOG.md` | Running log of governance findings and changes | ISO 42001 Clause 10 · NIST MANAGE 4 |
+
+### Machine-readable governance config — [`/config`](./config)
+
+| File | Purpose | Framework |
+|---|---|---|
+| `agent_manifest.yaml` | Per-agent accountability, scope boundaries, EU AI Act tier, oversight triggers | NIST GOVERN 2 · ISO 42001 Clause 6 |
+| `model_registry.json` | Model version registry with performance baselines | NIST MEASURE 2.2 · ISO 42001 Clause 8 |
+| `performance_baselines.yaml` | Warning and critical drift thresholds per metric | NIST MEASURE 2.7 · ISO 42001 Clause 9 |
+
+### GRC controls in code
+
+| Control | File | Framework |
+|---|---|---|
+| EU AI Act Article 50 transparency disclosure | `agents/transparency.py` | EU AI Act Art. 50 |
+| Bias indicator check (3 categories, 4 risk levels) | `agents/bias_check.py` | NIST MEASURE 2.11 · NIST AI 600-1 Risk 2 |
+| Extended audit log with data lineage | `memory/audit_logger.py` | EU AI Act Art. 12 · ISO 42001 Clause 8 |
+| PII scrubbing before LLM calls | `agents/governance.py` | EU AI Act Art. 10 · NIST MEASURE 2.13 |
+| Prompt injection scanner | `agents/security_layer.py` | NIST AI 600-1 Risk 11 |
+| Hallucination faithfulness eval | `agents/eval_agent.py` | NIST MEASURE 2.6 · NIST AI 600-1 Risk 1 |
+| Confidence calibration (Brier score) | `agents/confidence.py` | NIST MEASURE 2.11 |
+| Human-in-the-loop gate at Decide stage | `agents/orchestrator.py` | EU AI Act Art. 14 · NIST MANAGE 1 |
+| Model routing with upgrade threshold | `agents/model_router.py` | NIST MEASURE 2.2 |
+| Cost tracking per run | `agents/cost_tracker.py` | NIST GOVERN 4 |
+
+---
+
 ## Key design decisions
 
 **Why hallucination eval is weighted at 30%**
@@ -272,7 +344,7 @@ The short version:
 | Choosing the right AI use cases | Orchestrator go/no-go with documented reasoning |
 | Data quality and feedback loops | RAG memory compounds with every decision |
 | Measuring AI quality reliably | Hallucination eval + confidence calibration + prompt A/B |
-| AI governance and risk | EU AI Act classifier + PII scrubber + bias detector |
+| AI governance and risk | Full GRC framework — NIST AI RMF + EU AI Act + ISO 42001 + AIGP BOK v2.1 — 28 controls, 14 artifacts |
 | Shadow AI and uncontrolled usage | Security layer is the governed alternative |
 | Prompt injection and agentic security | Input sanitisation + output validation + security log |
 | Cost explosion and unit economics | Model routing + cost tracker — ~$0.003 per run |
